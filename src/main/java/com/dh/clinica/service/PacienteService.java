@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 @Service
-public class PacienteService {
+public class PacienteService implements IPacienteService {
 
     private final PacienteRepository pacienteRepository;
 
@@ -38,4 +38,9 @@ public class PacienteService {
     public Paciente actualizar(Paciente p) {
         return pacienteRepository.save(p);
     }
+
+    public Optional<Paciente> findByDni(String dni) {
+        return pacienteRepository.findByDni(dni);
+    }
+
 }

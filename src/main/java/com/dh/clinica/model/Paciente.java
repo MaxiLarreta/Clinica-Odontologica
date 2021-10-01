@@ -1,14 +1,12 @@
 package com.dh.clinica.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table
+@Table(name = "Paciente")
 public class Paciente {
 
     @Id
@@ -19,9 +17,7 @@ public class Paciente {
     private String apellido;
     private String dni;
     private Date fechaIngreso;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "domicilio_id", referencedColumnName = "id")
-    private Domicilio domicilio;
+    private String domicilio;
     @OneToMany(mappedBy = "paciente", fetch = FetchType.LAZY)
     private Set<Turno> turnos = new HashSet<>();
 
@@ -29,7 +25,7 @@ public class Paciente {
     public Paciente() {
     }
 
-    public Paciente(Integer id, String nombre, String apellido, String dni, Date fechaIngreso, Domicilio domicilio) {
+    public Paciente(Integer id, String nombre, String apellido, String dni, Date fechaIngreso, String domicilio) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -38,7 +34,7 @@ public class Paciente {
         this.domicilio = domicilio;
     }
 
-    public Paciente(String nombre, String apellido, String dni, Date fechaIngreso, Domicilio domicilio) {
+    public Paciente(String nombre, String apellido, String dni, Date fechaIngreso, String domicilio) {
 
         this.nombre = nombre;
         this.apellido = apellido;
@@ -88,11 +84,11 @@ public class Paciente {
         this.fechaIngreso = fechaIngreso;
     }
 
-    public Domicilio getDomicilio() {
+    public String getDomicilio() {
         return domicilio;
     }
 
-    public void setDomicilio(Domicilio domicilio) {
+    public void setDomicilio(String domicilio) {
         this.domicilio = domicilio;
     }
 

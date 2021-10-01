@@ -2,6 +2,8 @@ package com.dh.clinica.controller;
 
 import com.dh.clinica.model.Odontologo;
 
+
+import com.dh.clinica.model.Paciente;
 import com.dh.clinica.service.OdontologoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,13 @@ public class OdontologoController {
     @GetMapping("/{id}")
     public ResponseEntity<Odontologo> buscar(@PathVariable Integer id) {
         Odontologo odontologo = odontologoService.buscar(id).orElse(null);
+
+        return ResponseEntity.ok(odontologo);
+    }
+
+    @GetMapping("/buscarMatricula/{matricula}")
+    public ResponseEntity<Odontologo> findBymatricula(@PathVariable Integer matricula) {
+        Odontologo odontologo = odontologoService.findByMatricula(matricula).orElse(null);
 
         return ResponseEntity.ok(odontologo);
     }

@@ -1,6 +1,7 @@
 package com.dh.clinica.service;
 
 import com.dh.clinica.model.Odontologo;
+import com.dh.clinica.model.Paciente;
 import com.dh.clinica.repository.impl.OdontologoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 @Service
-public class OdontologoService {
+public class OdontologoService implements IOdontologoService {
 
     private final OdontologoRepository odontologoRepository;
 
@@ -38,4 +39,10 @@ public class OdontologoService {
     public Odontologo actualizar(Odontologo odontologo) {
         return odontologoRepository.save(odontologo);
     }
+
+    public Optional<Odontologo> findByMatricula(Integer matricula) {
+        return odontologoRepository.findByMatricula(matricula);
+    }
+
+
 }

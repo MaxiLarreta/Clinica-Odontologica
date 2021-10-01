@@ -1,8 +1,8 @@
 package com.dh.clinica.controller;
 
+import com.dh.clinica.model.ConsultaSemanaSiguienteDTO;
 import com.dh.clinica.model.Turno;
-import com.dh.clinica.service.OdontologoService;
-import com.dh.clinica.service.PacienteService;
+import com.dh.clinica.model.TurnoDTO;
 import com.dh.clinica.service.TurnoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,34 +17,42 @@ public class TurnoController {
 
     @Autowired
     private TurnoService turnoService;
-    @Autowired
-    private PacienteService pacienteService;
-    @Autowired
-    private OdontologoService odontologoService;
 
     @PostMapping
-    public ResponseEntity<Turno> registrarTurno(@RequestBody Turno turno) {
-        ResponseEntity<Turno> response;
-        if (pacienteService.buscar(turno.getPaciente().getId()).isPresent() && odontologoService.buscar(turno.getOdontologo().getId()).isPresent())
-            response = ResponseEntity.ok(turnoService.registrarTurno(turno));
-
-        else
+    public ResponseEntity<Integer> registrarTurno(@RequestBody TurnoDTO turno) {
+        ResponseEntity<Integer> response;
+        try {
+            Integer turnoID = this.turnoService.registrarTurno(turno);
+            response = ResponseEntity.ok(turnoID);
+            return response;
+        } catch (Exception e) {
             response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return response;
+        }
+    }
 
-        return response;
+    @GetMapping("/{id}")
+    public ResponseEntity<TurnoDTO> buscar(@PathVariable Integer id) {
 
+        Turno turno = turnoService.buscar(id).get();
+        return ResponseEntity.ok(new TurnoDTO(turno.getId(), turno.getPaciente().getDni(), turno.getOdontologo().getMatricula(), turno.getDate()));
 
     }
 
+    @GetMapping("/siguienteSemana")
+    public ResponseEntity<List<ConsultaSemanaSiguienteDTO>> buscarSiguienteSemana() {
+        return ResponseEntity.ok(turnoService.buscarPorSemana());
+    }
+
     @GetMapping
-    public ResponseEntity<List<Turno>> listar() {
+    public ResponseEntity<List<TurnoDTO>> listar() {
         return ResponseEntity.ok(turnoService.listar());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         ResponseEntity<String> response;
-        if (turnoService.buscar(id).isPresent()) { // Esta validacion no esta en el enunciado del ejericio, pero se las dejo para que la tengan.
+        if (turnoService.buscar(id).isPresent()) {
             turnoService.eliminar(id);
             response = ResponseEntity.status(HttpStatus.NO_CONTENT).body("Eliminado");
         } else {
@@ -54,9 +62,14 @@ public class TurnoController {
     }
 
     @PutMapping
-    public ResponseEntity<Turno> actualizarTurno(@RequestBody Turno turno) {
-        return ResponseEntity.ok(turnoService.actualizar(turno));
-
+    public ResponseEntity<TurnoDTO> actualizarTurno(@RequestBody TurnoDTO turnoDTO) {
+        ResponseEntity<Integer> response;
+        try {
+            this.turnoService.actualizar(turnoDTO);
+            return ResponseEntity.ok(turnoDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
 

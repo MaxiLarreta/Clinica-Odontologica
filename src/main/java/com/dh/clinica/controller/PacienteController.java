@@ -20,12 +20,18 @@ public class PacienteController {
     public ResponseEntity<Paciente> registrarPaciente(@RequestBody Paciente paciente) {
 
         return ResponseEntity.ok(pacienteService.guardar(paciente));
-
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Paciente> buscar(@PathVariable Integer id) {
         Paciente paciente = pacienteService.buscar(id).orElse(null);
+
+        return ResponseEntity.ok(paciente);
+    }
+
+    @GetMapping("/buscarDni/{dni}")
+   public ResponseEntity<Paciente> findByDni(@PathVariable String dni) {
+        Paciente paciente = pacienteService.findByDni(dni).orElse(null);
 
         return ResponseEntity.ok(paciente);
     }
